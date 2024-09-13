@@ -17,7 +17,7 @@ public class UserFile {
     @SequenceGenerator(name = "user_sequence",sequenceName = "user_sequence",allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
     private Long id;
-    @Column(unique = true)
+    @Column(unique = false)
     private String fileName;
     private String filePath;
     private String creator;
