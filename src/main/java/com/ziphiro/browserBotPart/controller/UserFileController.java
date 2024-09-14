@@ -23,6 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/files")
@@ -42,7 +44,7 @@ public class UserFileController {
                 return userFileService.downloadFile(fileName, userName);
         }
         @PostMapping("/upload/{userName}")
-        public String uploadFile(@RequestParam MultipartFile file, @PathVariable String userName) throws IOException {
+        public CompletableFuture<String> uploadFile(@RequestParam MultipartFile file, @PathVariable String userName) throws IOException {
                return userFileService.uploadFile(file, userName);
         }
 

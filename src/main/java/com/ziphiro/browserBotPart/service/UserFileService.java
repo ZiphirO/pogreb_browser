@@ -2,29 +2,23 @@ package com.ziphiro.browserBotPart.service;
 
 import com.ziphiro.browserBotPart.entityes.UserFile;
 import com.ziphiro.browserBotPart.repositories.UserFileRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UserFileService {
@@ -43,8 +37,9 @@ public class UserFileService {
         return userFileRepository.findFilesByCreator(name);
     }
 
+    @Async
     public ResponseEntity<Resource> downloadFile(String fileName, String userName) throws IOException {
-
+        CompletableFuture<ResponseEntity<Resource>> task = new CompletableFuture<>();
         Path filePath  = Path.of(storageDir, userName, fileName);
         InputStream fileStream = new FileInputStream(filePath.toFile());
 
@@ -55,8 +50,8 @@ public class UserFileService {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new InputStreamResource(fileStream));
     }
-
-    public String uploadFile(MultipartFile file, String userName) {
+    @Async
+    public CompletableFuture<String> uploadFile(MultipartFile file, String userName) {
         String request = "";
         if (file.isEmpty()){
             request = "error in upload";
@@ -73,7 +68,7 @@ public class UserFileService {
             userFileRepository.save(uploadFile);
             request = "file successful uploaded";
         }
-        return request;
+        return new AsyncResult<>(request).completable();
     }
 
     public void deleteFileFromStorage(String fileName, String userName) throws IOException {
