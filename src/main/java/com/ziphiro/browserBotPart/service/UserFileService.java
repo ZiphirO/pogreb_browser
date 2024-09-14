@@ -38,7 +38,7 @@ public class UserFileService {
     }
 
     @Async
-    public ResponseEntity<Resource> downloadFile(String fileName, String userName) throws IOException {
+    public CompletableFuture<ResponseEntity<Resource>> downloadFile(String fileName, String userName) throws IOException {
         CompletableFuture<ResponseEntity<Resource>> task = new CompletableFuture<>();
         Path filePath  = Path.of(storageDir, userName, fileName);
         InputStream fileStream = new FileInputStream(filePath.toFile());
@@ -46,9 +46,9 @@ public class UserFileService {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" +
                 fileName + "/");
-        return ResponseEntity.ok().headers(headers).contentLength(filePath.toFile().length())
+        return CompletableFuture.completedFuture(ResponseEntity.ok().headers(headers).contentLength(filePath.toFile().length())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(new InputStreamResource(fileStream));
+                .body(new InputStreamResource(fileStream)));
     }
     @Async
     public CompletableFuture<String> uploadFile(MultipartFile file, String userName) {
@@ -68,7 +68,7 @@ public class UserFileService {
             userFileRepository.save(uploadFile);
             request = "file successful uploaded";
         }
-        return new AsyncResult<>(request).completable();
+        return CompletableFuture.completedFuture(request);
     }
 
     public void deleteFileFromStorage(String fileName, String userName) throws IOException {

@@ -40,7 +40,7 @@ public class UserFileController {
             return userFileService.getAllUserFilesPaths(creator);
         }
         @GetMapping(value = "/download/{userName}/{fileName}", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-        public ResponseEntity<Resource> downloadFile (@PathVariable String fileName, @PathVariable String userName) throws IOException {
+        public CompletableFuture<ResponseEntity<Resource>> downloadFile (@PathVariable String fileName, @PathVariable String userName) throws IOException {
                 return userFileService.downloadFile(fileName, userName);
         }
         @PostMapping("/upload/{userName}")
