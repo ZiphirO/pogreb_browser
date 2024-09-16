@@ -8,34 +8,25 @@ import com.ziphiro.browserBotPart.entityes.UserFile;
 import com.ziphiro.browserBotPart.service.UserFileService;
 import com.ziphiro.browserBotPart.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.aot.AotServices;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/files")
-//@CrossOrigin
 public class UserFileController {
 
+        private final UserFileService userFileService;
+        private final UserService userService;
 
-        @Autowired
-        private UserFileService userFileService;
-
-        @GetMapping("/userName/{creator}")
+        @GetMapping("/{creator}")
         public List<UserFile> getAllUserFilesByUserName(@PathVariable String creator){
             return userFileService.getAllUserFilesPaths(creator);
         }
@@ -44,7 +35,8 @@ public class UserFileController {
                 return userFileService.downloadFile(fileName, userName);
         }
         @PostMapping("/upload/{userName}")
-        public CompletableFuture<String> uploadFile(@RequestParam MultipartFile file, @PathVariable String userName) throws IOException {
+        public CompletableFuture<String> uploadFile
+                (@RequestParam MultipartFile file, @PathVariable String userName) throws IOException {
                return userFileService.uploadFile(file, userName);
         }
 
@@ -55,17 +47,14 @@ public class UserFileController {
                  userFileService.deleteFileFromDataBase(fileId);
         }
 
-
-        @Autowired
-        private UserService userService;
-
         @GetMapping
         public boolean checkUser(User user){
                 return userService.checkUser(user);
         }
+
         @PostMapping
-        public User registerUser(User user){
-                return userService.initUser(user);
+        public void registerUser(User user){
+                userService.initUser(user);
         }
 
         @PostMapping("/add")

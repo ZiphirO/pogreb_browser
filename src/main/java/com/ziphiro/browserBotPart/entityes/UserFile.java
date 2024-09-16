@@ -1,6 +1,5 @@
 package com.ziphiro.browserBotPart.entityes;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
