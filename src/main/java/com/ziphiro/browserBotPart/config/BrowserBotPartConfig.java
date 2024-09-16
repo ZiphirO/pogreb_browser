@@ -1,5 +1,7 @@
 package com.ziphiro.browserBotPart.config;
 
+import com.ziphiro.browserBotPart.values.StV;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -9,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@Log4j2
 @Configuration
 @EnableAsync
 public class BrowserBotPartConfig {
@@ -28,14 +31,25 @@ public class BrowserBotPartConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public ThreadPoolTaskExecutor taskExecutor() {
+    @Bean(name = "uploadExecutor")
+    public ThreadPoolTaskExecutor uploadExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(4);
         executor.setMaxPoolSize(4);
-        executor.setQueueCapacity(1000);
+        executor.setQueueCapacity(5000);
         executor.setThreadNamePrefix("MyAsyncThread-");
-        //executor.setRejectedExecutionHandler((r, executor1) -> log.warn("Task rejected, thread pool is full and queue is also full"));
+        executor.setRejectedExecutionHandler((r, executor1) -> log.warn(StV.TASK_REJECTED));
+        executor.initialize();
+        return executor;
+    }
+    @Bean(name = "downloadExecutor")
+    public ThreadPoolTaskExecutor downloadExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(4);
+        executor.setMaxPoolSize(4);
+        executor.setQueueCapacity(5000);
+        executor.setThreadNamePrefix("MyAsyncThread-");
+        executor.setRejectedExecutionHandler((r, executor1) -> log.warn(StV.TASK_REJECTED));
         executor.initialize();
         return executor;
     }

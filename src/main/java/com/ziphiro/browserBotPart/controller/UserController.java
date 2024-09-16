@@ -5,24 +5,31 @@ import com.ziphiro.browserBotPart.DTO.UserDTO;
 import com.ziphiro.browserBotPart.entityes.User;
 import com.ziphiro.browserBotPart.response.LogInResponse;
 import com.ziphiro.browserBotPart.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-   private UserService userService;
+
+   private final UserService userService;
 
     @GetMapping
     public boolean checkUser(User user){
         return userService.checkUser(user);
     }
+
+    @GetMapping("/{userEmail}")
+    public String getCurrUserName(@PathVariable String userEmail){
+        return userService.getCurrentUserName(userEmail);
+    }
+
     @PostMapping
-    public User registerUser(User user){
-        return userService.initUser(user);
+    public void registerUser(User user){
+        userService.initUser(user);
     }
 
     @PostMapping("/add")
