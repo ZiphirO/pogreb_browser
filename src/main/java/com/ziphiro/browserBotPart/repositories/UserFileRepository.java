@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface UserFileRepository extends JpaRepository<UserFile, Long> {
 
     List<UserFile> findFilesByCreator(String creator);
-
+    Optional<UserFile> findUserFileByFileName(String fileName);
 }

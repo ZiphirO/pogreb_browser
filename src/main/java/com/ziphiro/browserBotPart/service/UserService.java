@@ -5,32 +5,30 @@ import com.ziphiro.browserBotPart.DTO.UserDTO;
 import com.ziphiro.browserBotPart.entityes.User;
 import com.ziphiro.browserBotPart.repositories.UserRepository;
 import com.ziphiro.browserBotPart.response.LogInResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ziphiro.browserBotPart.values.StrV;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public User initUser(User user){
-        return userRepository.save(user);
+    public String initUser(User user){
+        if (user != null) {
+            userRepository.save(user);
+            return user.getName() + StrV.REGISTERED;
+        }else return StrV.FAILED_REGISTRATION;
     }
 
     public boolean checkUser(User user){
-        boolean check = false;
-        if (userRepository.findByName(user.getName()).isPresent()){
-            check = true;
-        }
-        return check;
+        return userRepository.findByName(user.getName()).isPresent();
     }
 
     public String addUser(UserDTO userDTO){
@@ -44,12 +42,11 @@ public class UserService {
         return user.getName();
     }
     public LogInResponse logInUser (LogInDto logInDto){
-        String msg = "";
         User user = userRepository.findByEmail(logInDto.getUserEmail());
         if (user != null){
             String password = logInDto.getUserPass();
             String encodePassword = user.getPass();
-            Boolean isOk = passwordEncoder.matches(password, encodePassword);
+            boolean isOk = passwordEncoder.matches(password, encodePassword);
             if (isOk){
                 Optional<User> userOk  = userRepository.findOneByEmailAndPass(logInDto.getUserEmail(), encodePassword);
                 if (userOk.isPresent()){

@@ -28,14 +28,27 @@ public class BrowserBotPartConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public ThreadPoolTaskExecutor taskExecutor() {
+    @Bean(name = "asyncDownload")
+    public ThreadPoolTaskExecutor downloadExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(4);
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(1000);
-        executor.setThreadNamePrefix("MyAsyncThread-");
-        //executor.setRejectedExecutionHandler((r, executor1) -> log.warn("Task rejected, thread pool is full and queue is also full"));
+        executor.setThreadNamePrefix("downloadThread-");
+        //executor.setRejectedExecutionHandler((r, executor1) -> log.warn("Task rejected,
+        // thread pool is full and queue is also full"));
+        executor.initialize();
+        return executor;
+    }
+    @Bean(name = "asyncUpload")
+    public ThreadPoolTaskExecutor uploadExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(4);
+        executor.setMaxPoolSize(4);
+        executor.setQueueCapacity(1000);
+        executor.setThreadNamePrefix("uploadThread-");
+        //executor.setRejectedExecutionHandler((r, executor1) -> log.warn("Task rejected,
+        // thread pool is full and queue is also full"));
         executor.initialize();
         return executor;
     }

@@ -1,6 +1,5 @@
 package com.ziphiro.browserBotPart.entityes;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,8 +21,4 @@ public class UserFile {
     private String filePath;
     private String creator;
 
-//    @JsonIgnore
-//    public Long getId() {
-//        return id;
-//    }
 }

@@ -12,5 +12,4 @@ public class LogInResponse {
     String message;
     Boolean status;
 
-
 }
