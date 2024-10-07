@@ -1,5 +1,6 @@
 package com.ziphiro.browserBotPart.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -8,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+@Slf4j
 @Configuration
 @EnableAsync
 public class BrowserBotPartConfig {
@@ -35,8 +36,8 @@ public class BrowserBotPartConfig {
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(1000);
         executor.setThreadNamePrefix("downloadThread-");
-        //executor.setRejectedExecutionHandler((r, executor1) -> log.warn("Task rejected,
-        // thread pool is full and queue is also full"));
+        executor.setRejectedExecutionHandler((r, executor1) -> log.warn("Task rejected, " +
+                "thread pool is full and queue is also full"));
         executor.initialize();
         return executor;
     }
@@ -47,9 +48,11 @@ public class BrowserBotPartConfig {
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(1000);
         executor.setThreadNamePrefix("uploadThread-");
-        //executor.setRejectedExecutionHandler((r, executor1) -> log.warn("Task rejected,
-        // thread pool is full and queue is also full"));
+        executor.setRejectedExecutionHandler((r, executor1) -> log.warn("Task rejected," +
+                "thread pool is full and queue is also full"));
         executor.initialize();
         return executor;
     }
+
+
 }

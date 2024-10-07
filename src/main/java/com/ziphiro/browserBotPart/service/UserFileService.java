@@ -29,7 +29,7 @@ import java.util.concurrent.CompletableFuture;
 public class UserFileService {
 
     private final UserFileRepository userFileRepository;
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserFileService.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(UserFileService.class);
     public List<UserFile> getAllUserFilesPaths(String name){
         return userFileRepository.findFilesByCreator(name);
     }
@@ -41,7 +41,7 @@ public class UserFileService {
         InputStream fileStream = new FileInputStream(filePath.toFile());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" +
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, StrV.ATTACHMENT_FILENAME +
                 fileName + StrV.SLASH);
         LOGGER.info(userName + StrV.COMPLETE_DOWNLOAD + fileName);
         return CompletableFuture.completedFuture(ResponseEntity.ok().headers(headers).contentLength(filePath.toFile().length())

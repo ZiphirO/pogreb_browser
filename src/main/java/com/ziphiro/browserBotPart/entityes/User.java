@@ -24,4 +24,8 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String pass;
+
+    public Long getId() {
+        return id;
+    }
 }

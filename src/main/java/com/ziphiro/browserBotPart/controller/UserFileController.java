@@ -56,7 +56,5 @@ public class UserFileController {
     @GetMapping
     public boolean checkUser(User user) {
         return userService.checkUser(user);
-
     }
-
 }

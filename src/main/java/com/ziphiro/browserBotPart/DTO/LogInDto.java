@@ -11,6 +11,4 @@ import lombok.*;
 public class LogInDto {
     private String userEmail;
     private String userPass;
-
-
 }
